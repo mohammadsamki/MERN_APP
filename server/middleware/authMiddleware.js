@@ -6,7 +6,10 @@ const auth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded);
     req.user = decoded.id;
+    req.role = decoded.role; // Store role in request for further use
+
     next();
   } catch (err) {
     res.status(400).json({ msg: 'Invalid token' });
