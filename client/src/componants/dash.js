@@ -16,6 +16,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
+import { useEffect,useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const NAVIGATION = [
   {
@@ -136,6 +139,43 @@ function CustomAppTitle() {
 }
 
 function DashboardLayoutSlots(props) {
+    const navigate = useNavigate();
+    const [profileData, setProfileData] = useState({});
+    useEffect(()=>{
+        //  take the token from local storage and set it in the header of the axios request
+        const token = localStorage.getItem('token');
+        if (token){
+            async function fetchData() {
+                try {
+                    const res = await  axios.get("http://127.0.0.1:5003/api/users/profile",{
+                        headers:{
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    console.log("Profile data:", res);
+                    setProfileData(res.data);
+                } catch (error) {
+                    console.error("Error fetching profile data:", error);
+                    // Optionally, you can redirect to login or show an error message
+                    navigate('/login');
+                    return;
+                    
+                }
+                
+        
+            }
+            fetchData();
+
+        // then using axios access the end point  http://127.0.0.1:5003/api/users/profile
+       
+
+        }
+        else{
+            // if the token is not found redirect to the login page
+            navigate('/login');
+        }
+        
+    },[]);
   const { window } = props;
 
   const router = useDemoRouter('/dashboard');
@@ -160,7 +200,13 @@ function DashboardLayoutSlots(props) {
             sidebarFooter: SidebarFooter,
           }}
         >
+            {profileData.role ? (
+                <p>Welcome {profileData.role?profileData.role :"not Found" }</p>
+            ): (
+                <p>Loading...</p>
+            ) }
           <DemoPageContent pathname={router.pathname} />
+          
         </DashboardLayout>
         {/* preview-end */}
       </AppProvider>
