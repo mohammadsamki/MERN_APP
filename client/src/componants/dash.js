@@ -18,7 +18,9 @@ import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
 import { useEffect,useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import axios from 'axios';
+import Profile from './profile';
 
 const NAVIGATION = [
   {
@@ -34,6 +36,11 @@ const NAVIGATION = [
     segment: 'orders',
     title: 'Orders',
     icon: <ShoppingCartIcon />,
+  },
+    {
+    segment: 'Profile',
+    title: 'Profile',
+    icon: <AccountBoxIcon />,
   },
 ];
 
@@ -53,7 +60,7 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }) {
+function DemoPageContent({ pathname,profileData}) {
   return (
     <Box
       sx={{
@@ -64,7 +71,15 @@ function DemoPageContent({ pathname }) {
         textAlign: 'center',
       }}
     >
-      <Typography>Dashboard content for {pathname}</Typography>
+    {pathname ==="/Profile" && (
+      <Profile profileData={profileData} />
+    )}
+    {pathname ==="/dashboard" && (
+      <Typography variant="h4" gutterBottom>
+        Page Dashboard
+                </Typography>
+    )}
+      {/* <Typography>Dashboard content for {pathname}</Typography> */}
     </Box>
   );
 }
@@ -205,7 +220,7 @@ function DashboardLayoutSlots(props) {
             ): (
                 <p>Loading...</p>
             ) }
-          <DemoPageContent pathname={router.pathname} />
+          <DemoPageContent profileData={profileData} pathname={router.pathname} />
           
         </DashboardLayout>
         {/* preview-end */}

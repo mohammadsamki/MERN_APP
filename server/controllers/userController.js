@@ -54,3 +54,23 @@ exports.getProfile = async (req, res) => {
   const user = await User.findById(req.user).select('-password');
   res.json(user);
 };
+//  create controller to change the user pass  the user must send the old pass and the new pass
+exports.changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findById(req.user);
+    console.log(user)
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return res.status(400).json({ msg: 'Old password is incorrect' });
+    const hashedNewPass = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPass;
+    await user.save();
+    res.json({ msg: 'Password changed successfully' });
+    
+  } catch (error) {
+    console.error("Error changing password:", error.message);
+    res.status(500).json({ msg: 'Server error', error: error.message });
+    
+  }
+}
