@@ -40,6 +40,7 @@ exports.login = async (req, res) => {
     if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match status:", isMatch); // Debugging line to check password match
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id,role:user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -64,7 +65,10 @@ exports.changePassword = async (req, res) => {
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Old password is incorrect' });
     const hashedNewPass = await bcrypt.hash(newPassword, 10);
-    user.password = hashedNewPass;
+    const matchAfterChange = await bcrypt.compare(newPassword, hashedNewPass);
+    console.log("New password match status after hashing:", matchAfterChange); // Debugging line to check new password match
+    console.log("Hashed new password:", hashedNewPass); // Debugging line to check hashed new password
+    user.password = newPassword;
     await user.save();
     res.json({ msg: 'Password changed successfully' });
     
