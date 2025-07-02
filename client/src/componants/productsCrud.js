@@ -8,12 +8,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+
 import axios from 'axios';
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
-
-
 
 export default function BasicTable() {
     const [rows, setRows] = React.useState([]);
@@ -22,6 +24,7 @@ export default function BasicTable() {
     const [price, setPrice] = React.useState('');
     const [category, setCategory] = React.useState('');
     const [image, setImage] = React.useState('');
+    const [apiCategory , setApiCategory] = React.useState([]);
     // Fetch initial data
     React.useEffect(() => {
         const fetchData = async () => {
@@ -29,6 +32,9 @@ export default function BasicTable() {
                 const response = await axios.get('http://127.0.0.1:5003/api/products');
                 console.log('Data fetched:', response.data);
                 setRows(response.data);
+                const categoryRes = await axios.get('http://127.0.0.1:5003/api/categories');
+                setApiCategory(categoryRes.data);
+                console.log('Categories fetched:', categoryRes.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -100,14 +106,23 @@ export default function BasicTable() {
        
       />
       {/* category */}
-      <TextField
-        label="Category"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-      />
+      {/* add select field */}
+              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+
+        <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={category}
+    label="Category"
+    onChange={(e) => setCategory(e.target.value)}
+  >
+    {apiCategory.map((cat) => (
+    <MenuItem value={cat._id}>{cat.name}</MenuItem>
+    ))}
+    
+
+  </Select>
+
       {/* img */}
       <TextField
         label="Image URL"
@@ -147,7 +162,7 @@ export default function BasicTable() {
               </TableCell>
               <TableCell align="right">{row.prodDescription}</TableCell>
               <TableCell align="right">{row.prodPrice}</TableCell>
-              <TableCell align="right">{row.prodCategory}</TableCell>
+              <TableCell align="right">{row.prodCategory.name}</TableCell>
               <TableCell align="right"><img src={row.prodImage} alt={row.prodName} style={{ width: '100px' }} /></TableCell>
               <TableCell align="right">
                 <Button>Update</Button>

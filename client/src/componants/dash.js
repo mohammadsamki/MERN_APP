@@ -23,7 +23,8 @@ import axios from 'axios';
 import Profile from './profile';
 import RedeemIcon from '@mui/icons-material/Redeem';
 import ProductCrud from './productsCrud'
-
+import { Category } from './category';
+import CategoryIcon from '@mui/icons-material/Category';
 
 
 const demoTheme = createTheme({
@@ -63,6 +64,9 @@ function DemoPageContent({ pathname,profileData}) {
       <Typography variant="h4" gutterBottom>
         Page Dashboard
                 </Typography>
+    )}
+    {pathname ==="/category" && (
+      <Category />
     )}
       {/* <Typography>Dashboard content for {pathname}</Typography> */}
     </Box>
@@ -168,7 +172,14 @@ function DashboardLayoutSlots(props) {
     title: 'Product',
     icon: <RedeemIcon />,
   
-  }] : []),
+  },
+{
+    segment: 'category',
+    title: 'Category',
+    icon: <CategoryIcon />,
+  }
+
+] : []),
 
 
    
