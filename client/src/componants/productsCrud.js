@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
 
 import axios from 'axios';
 function createData(name, calories, fat, carbs, protein) {
@@ -23,7 +24,7 @@ export default function BasicTable() {
     const [description, setDescription] = React.useState('');
     const [price, setPrice] = React.useState('');
     const [category, setCategory] = React.useState('');
-    const [image, setImage] = React.useState('');
+    const [image, setImage] = React.useState(null);
     const [apiCategory , setApiCategory] = React.useState([]);
     // Fetch initial data
     React.useEffect(() => {
@@ -46,23 +47,32 @@ export default function BasicTable() {
     <TableContainer component={Paper}>
         <form onSubmit={async (e)=>{
             e.preventDefault();
-            const newRow = {
+            console.log('post prod')
+        
+            // console.log(newRow)
+            // Send data to the server
+            const data = new FormData();
+            data.append('prodName',name)
+            data.append('prodDescription',description)
+            data.append('prodPrice',price)
+            data.append('prodCategory',category)
+            data.append('prodImage',image)
+            try {
+                 const response = await axios.post('http://127.0.0.1:5003/api/products', data ,{
+                headers: {
+                    // 'Content-Type': 'application/json',
+                    // Add any other headers you need, like Authorization
+                    "Authorization": `Bearer ${localStorage.getItem('token')}` //
+                }
+                 });
+            console.log('Response from server:', response.data);
+                const newRow = {
                 prodName:name,
                 prodDescription:description,
                 prodPrice:price,
                 prodCategory:category,
                 prodImage:image
             };
-            // Send data to the server
-            try {
-                 const response = await axios.post('http://127.0.0.1:5003/api/products', newRow ,{
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any other headers you need, like Authorization
-                    "Authorization": `Bearer ${localStorage.getItem('token')}` //
-                }
-                 });
-            console.log('Response from server:', response.data);
             setRows([...rows, newRow]);
             } catch (error) {
                 console.error('Error sending data to server:', error);
@@ -76,7 +86,7 @@ export default function BasicTable() {
             setDescription('');
             setPrice('');
             setCategory('');
-            setImage('');
+            setImage(null);
         }}
         >
       <TextField
@@ -124,13 +134,12 @@ export default function BasicTable() {
   </Select>
 
       {/* img */}
-      <TextField
+      <Input
+      type="file"
+      accept="image/*"
         label="Image URL"
-        variant="outlined"
         fullWidth
-        margin="normal"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
+        onChange={(e) => setImage(e.target.files[0])}
       />
       <Button
         variant="contained"
@@ -163,7 +172,7 @@ export default function BasicTable() {
               <TableCell align="right">{row.prodDescription}</TableCell>
               <TableCell align="right">{row.prodPrice}</TableCell>
               <TableCell align="right">{row.prodCategory.name}</TableCell>
-              <TableCell align="right"><img src={row.prodImage} alt={row.prodName} style={{ width: '100px' }} /></TableCell>
+              <TableCell align="right"><img src={`http://127.0.0.1:5003/uploads/${row.prodImage}`} alt={row.prodName} style={{ width: '100px' }} /></TableCell>
               <TableCell align="right">
                 <Button>Update</Button>
                 <Button onClick={async()=>{

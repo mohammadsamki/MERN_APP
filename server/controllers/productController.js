@@ -4,7 +4,10 @@ const Product = require('../models/Products');
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { prodName, prodImage, prodPrice, prodDescription, prodCategory } = req.body;
+    const prodImage = req.file ? req.file.filename : null;
+    console.log(prodImage)
+
+    const { prodName,  prodPrice, prodDescription, prodCategory } = req.body;
     const newProduct = new Product({
       prodName,
       prodImage,
