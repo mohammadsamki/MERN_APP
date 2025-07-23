@@ -18,5 +18,7 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.get('/profile', auth, userController.getProfile);
 router.post('/change-password', auth, userController.changePassword);
+// route for update profile
+router.put('/update-profile', auth, upload.single('profileImage'), userController.updateProfile);
 
 module.exports = router;

@@ -25,6 +25,8 @@ import RedeemIcon from '@mui/icons-material/Redeem';
 import ProductCrud from './productsCrud'
 import { Category } from './category';
 import CategoryIcon from '@mui/icons-material/Category';
+import DisplayProducts from './displayProduucts';
+import Cart from './cart';
 
 
 const demoTheme = createTheme({
@@ -56,6 +58,12 @@ function DemoPageContent({ pathname,profileData}) {
     >
     {pathname ==="/Profile" && (
       <Profile profileData={profileData} />
+    )}
+        {pathname ==="/Cart" && (
+      <Cart />
+    )}
+       {pathname ==="/DisplayProducts" && (
+      <DisplayProducts  />
     )}
         {pathname ==="/Product" && (
       <ProductCrud />
@@ -155,6 +163,16 @@ function DashboardLayoutSlots(props) {
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
+  },
+  {
+    segment: 'DisplayProducts',
+    title: 'Display Products',
+    icon: <ShoppingCartIcon />,
+  },
+    {
+    segment: 'Cart',
+    title: 'Display Cart',
+    icon: <ShoppingCartIcon />,
   },
   {
     segment: 'orders',

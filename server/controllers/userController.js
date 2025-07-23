@@ -78,3 +78,24 @@ exports.changePassword = async (req, res) => {
     
   }
 }
+
+//  controller update profile data 
+exports.updateProfile = async (req, res) => {
+  try {
+
+    const profileImage = req.file ? req.file.path : null;
+    
+    const {username,email, fullName, address, phone } = req.body;
+    const user = await User.findByIdAndUpdate(req.user, { username,email,profileImage, fullName, address, phone }, { new: true });
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+
+
+    await user.save();
+    res.json({ msg: 'Profile updated successfully', user });
+  } catch (error) {
+    console.error("Error updating profile:", error.message);
+    res.status(500).json({ msg: 'Server error', error: error.message });
+    
+  }
+}
