@@ -24,6 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes); // Uncomment if you have product routes
 app.use('/api/categories', categoryRouters); // Uncomment if you have category routes
 app.use('/api/cart', cartRoutes); // Use cart routes
+app.use('/api/orders', orderRoutes); // Use order routes
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

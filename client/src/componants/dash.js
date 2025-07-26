@@ -27,7 +27,7 @@ import { Category } from './category';
 import CategoryIcon from '@mui/icons-material/Category';
 import DisplayProducts from './displayProduucts';
 import Cart from './cart';
-
+import Orders from './orders';
 
 const demoTheme = createTheme({
   cssVariables: {
@@ -61,6 +61,9 @@ function DemoPageContent({ pathname,profileData}) {
     )}
         {pathname ==="/Cart" && (
       <Cart />
+    )}
+    {pathname ==="/orders" && (
+      <Orders  profileData={profileData}/>
     )}
        {pathname ==="/DisplayProducts" && (
       <DisplayProducts  />

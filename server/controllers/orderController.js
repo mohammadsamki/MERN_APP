@@ -7,7 +7,8 @@ exports.placeOrder = async (req, res) => {
     if (!cart){
         return res.status(400).json({ message: 'Cart not found' });
     }
-    const total =cart.items.reduce((sum,item)=>sum + item.product.price * item.quantity,0);
+    const total =cart.items.reduce((sum,item)=>sum + parseInt(item.product.prodPrice) * item.quantity,0);
+    console.log("Total price of the order:", total);
     const order = new Orders({
         user:req.user,
         items:cart.items.map(item=>({
@@ -24,6 +25,6 @@ exports.placeOrder = async (req, res) => {
 }
 // get all orders controller
 exports.getAllOrders = async (req, res) => {
-    const orders = await Orders.find({ user: req.user }).populate('items.product');
+    const orders = await Orders.find({ user: req.user }).populate(['items.product', 'user']);
     res.status(200).json(orders);
 }
